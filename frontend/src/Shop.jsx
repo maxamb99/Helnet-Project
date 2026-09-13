@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 export default function Shop() {
   const [products, setProducts] = useState([]);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     async function fetchAPI() {
@@ -17,6 +18,14 @@ export default function Shop() {
 
     fetchAPI();
   }, []);
+
+  const filteredProducts = products.filter((product) => {
+    return (
+      product.title.toLowerCase().includes(search.toLowerCase()) ||
+      product.category.toLowerCase().includes(search.toLowerCase()) ||
+      product.brand?.toLowerCase().includes(search.toLowerCase())
+    );
+  });
 
   return (
     <div className="min-h-screen bg-white">
@@ -40,15 +49,17 @@ export default function Shop() {
         <div className="mt-12 flex max-w-2xl items-center border border-gray-300 px-5 py-4">
           <input
             type="text"
-            placeholder="Search by product or category..."
-            className="w-full bg-transparent outline-none"
+            placeholder="Search by product..."
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            className="w-full mx-10 outline-none"
           />
         </div>
       </section>
 
       <section className="bg-gray-100 px-6 py-12">
         <div className="flex flex-wrap items-center justify-center gap-6">
-          {products.map((product) => (
+          {filteredProducts.map((product) => (
             <div
               key={product.id}
               className="w-80 rounded-lg bg-white p-6 shadow-md"
